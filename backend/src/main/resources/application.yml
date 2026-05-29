@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/truthlens}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# Custom Application settings
+app:
+  jwt:
+    # 256-bit base64-encoded secret key
+    secret: ${JWT_SECRET:dHJ1dGhsZW5zLXNlY3VyZS1qd3Qtc2VjcmV0LWtleS1mb3ItZmluYWwtcHJvamVjdC1jYXN0bGU=}
+    expirationMs: ${JWT_EXPIRATION_MS:86400000} # 24 hours
+  nlp:
+    service-url: ${NLP_SERVICE_URL:http://localhost:8000}
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.data.mongodb: INFO

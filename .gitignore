@@ -1,0 +1,20 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Build outputs
+frontend/dist/
+backend/target/
+maven/
+
+# Env files
+.env
+*.env
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
