@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: truthlens-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - truthlens-net
+    restart: always
+
+  nlp-service:
+    image: ${DOCKER_HUB_USERNAME:-shubhamkumar071}/truthlens-nlp:latest
+    container_name: truthlens-nlp
+    ports:
+      - "8000:8000"
+    networks:
+      - truthlens-net
+    restart: always
+
+  backend:
+    image: ${DOCKER_HUB_USERNAME:-shubhamkumar071}/truthlens-backend:latest
+    container_name: truthlens-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/truthlens
+      - NLP_SERVICE_URL=http://nlp-service:8000
+      - JWT_SECRET=dHJ1dGhsZW5zLXNlY3VyZS1qd3Qtc2VjcmV0LWtleS1mb3ItZmluYWwtcHJvamVjdC1jYXN0bGU=
+      - JWT_EXPIRATION_MS=86400000
+    depends_on:
+      - mongodb
+      - nlp-service
+    networks:
+      - truthlens-net
+    restart: always
+
+  frontend:
+    image: ${DOCKER_HUB_USERNAME:-shubhamkumar071}/truthlens-frontend:latest
+    container_name: truthlens-frontend
+    ports:
+      - "80:80"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8080/api
+    depends_on:
+      - backend
+    networks:
+      - truthlens-net
+    restart: always
+
+networks:
+  truthlens-net:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
